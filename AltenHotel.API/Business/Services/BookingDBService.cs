@@ -16,6 +16,10 @@ namespace AltenHotel.API.Business.Services
             _dbComm = new DBCommunication();
         }
 
+        /// <summary>
+        /// Gets the available dates for the room to be booked, in a range of 30 days starting from today + 1.
+        /// </summary>
+        /// <returns>list of DateTime</returns>
         public List<DateTime> GetAvailability()
         {
             DateTime initialDate = DateTime.Today.AddDays(-3);
@@ -72,6 +76,12 @@ namespace AltenHotel.API.Business.Services
             return response;
         }
 
+        /// <summary>
+        /// Extracts and return the dates between two dates.
+        /// </summary>
+        /// <param name="initialDate"></param>
+        /// <param name="finalDate"></param>
+        /// <returns>list of DateTime</returns>
         private List<DateTime> ExtractMiddleDates(DateTime initialDate, DateTime finalDate)
         {
             return Enumerable.Range(0, (finalDate - initialDate).Days + 1).Select(d => initialDate.AddDays(d)).ToList();

@@ -21,8 +21,12 @@ namespace AltenHotel.API.Controllers
         }
 
         // GET: api/<BookingController>
+        /// <summary>
+        /// Returns the available dates for the room to be booked.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        public ActionResult<IEnumerable<string>> GetAllAvailability()
+        public ActionResult<IEnumerable<DateTime>> GetAllAvailability()
         {
             try
             {

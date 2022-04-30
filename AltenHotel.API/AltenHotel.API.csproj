@@ -11,10 +11,5 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Entities\" />
-    <Folder Include="Infra\DAO\" />
-  </ItemGroup>
-
 
 </Project>

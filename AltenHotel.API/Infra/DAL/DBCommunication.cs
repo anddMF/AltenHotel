@@ -28,20 +28,20 @@ namespace AltenHotel.API.Infra.DAL
         }
 
         /// <summary>
-        /// Executes and returns select operations.
+        /// Executes and returns select queries.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="name"></param>
         /// <param name="param"></param>
         /// <returns></returns>
-        public IEnumerable<T> ExecuteGet<T>(string name, Dictionary<string, dynamic> param)
+        public List<T> ExecuteGet<T>(string name, Dictionary<string, dynamic> param)
         {
             DataTable dt = new DataTable();
             var sqlResult = _connection.GetReader(name, CommandType.StoredProcedure, param);
             dt.Load(sqlResult);
 
             var result = TranslateDataTable<T>(dt);
-            return result;
+            return result.ToList();
         }
 
         /// <summary>

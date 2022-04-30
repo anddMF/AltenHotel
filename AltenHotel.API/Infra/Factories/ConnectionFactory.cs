@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AltenHotel.API.Entities;
+using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -12,21 +13,12 @@ namespace AltenHotel.API.Infra.Factories
     public class ConnectionFactory
     {
         private MySqlConnection Connection;
-        private IConfiguration config;
         private string connString;
 
         public ConnectionFactory()
         {
-            // get conn string
+            connString = AppSettings.ConnectionString;
         }
-
-        //public ConnectionFactory(IConfiguration _config)
-        //{
-        //    config = _config;
-
-        //    connString = config.GetConnectionString("SQLdb");
-        //    //connString = Environment.GetEnvironmentVariable("Azuredb");
-        //}
 
         private MySqlConnection GetConnection()
         {
@@ -57,28 +49,36 @@ namespace AltenHotel.API.Infra.Factories
             Dictionary<string, object> parametros = null
             )
         {
-            using (var cmd = this.GetCommand())
+            try
             {
-                cmd.CommandText = cmdText;
-                cmd.CommandType = cmdType;
-
-                if (parametros != null)
+                using (var cmd = this.GetCommand())
                 {
-                    foreach (var pr in parametros)
+                    cmd.CommandText = cmdText;
+                    cmd.CommandType = cmdType;
+
+                    if (parametros != null)
                     {
-                        var parameter = cmd.CreateParameter();
-                        parameter.ParameterName = pr.Key;
-                        parameter.Value = pr.Value;
-                        if (pr.Value != null && pr.Value.GetType().Name == "Boolean")
+                        foreach (var pr in parametros)
                         {
-                            parameter.MySqlDbType = MySqlDbType.Bit;
+                            var parameter = cmd.CreateParameter();
+                            parameter.ParameterName = pr.Key;
+                            parameter.Value = pr.Value;
+                            if (pr.Value != null && pr.Value.GetType().Name == "Boolean")
+                            {
+                                parameter.MySqlDbType = MySqlDbType.Bit;
+                            }
+                            cmd.Parameters.Add(parameter);
                         }
-                        cmd.Parameters.Add(parameter);
                     }
+
+                    return cmd.ExecuteReader(); //SELECT, PROC QUE RETORNEM TABELA (n LINHAS E n COLUNAS)
                 }
 
-                return cmd.ExecuteReader(); //SELECT, PROC QUE RETORNEM TABELA (n LINHAS E n COLUNAS)
+            } catch (Exception ex)
+            {
+                return null;
             }
+            
         }
 
         public bool ExecuteNonQuery(string cmdText,

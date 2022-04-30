@@ -1,3 +1,4 @@
+using AltenHotel.API.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,6 +31,9 @@ namespace AltenHotel.API
         {
             services.AddControllers();
 
+            AppSettings options = Configuration.GetSection("AppConfiguration").Get<AppSettings>();
+            services.AddSingleton(options);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -52,8 +56,6 @@ namespace AltenHotel.API
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            
 
             app.UseHttpsRedirection();
 

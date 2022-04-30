@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AltenHotel.API.Business.Services;
+using AltenHotel.API.Entities;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +14,26 @@ namespace AltenHotel.API.Controllers
     [ApiController]
     public class BookingController : ControllerBase
     {
+        private BookingDBService _bookingSvc;
+        public BookingController()
+        {
+            _bookingSvc = new BookingDBService();
+        }
+
         // GET: api/<BookingController>
         [HttpGet]
-        public IEnumerable<string> GetAllAvailability()
+        public ActionResult<IEnumerable<string>> GetAllAvailability()
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                var response = _bookingSvc.GetAvailability();
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         // GET api/<BookingController>/5

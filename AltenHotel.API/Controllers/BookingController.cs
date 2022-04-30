@@ -36,6 +36,7 @@ namespace AltenHotel.API.Controllers
         [HttpPut("{id}")]
         public void EditReservation(int id, [FromBody] string value)
         {
+            // before calling the update, needs to check the availability of the new date
         }
 
         // DELETE api/<BookingController>/5

@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Business\" />
     <Folder Include="Entities\" />
     <Folder Include="Infra\DAO\" />
   </ItemGroup>

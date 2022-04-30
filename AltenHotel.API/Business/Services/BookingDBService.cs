@@ -33,9 +33,20 @@ namespace AltenHotel.API.Business.Services
             return fullDateList;
         }
 
-        public dynamic PlaceReservation()
+        public dynamic PlaceReservation(Reservation obj)
         {
-            // TODO insert a reservation 
+            List<DateTime> stay = ExtractMiddleDates(obj.StartDate, obj.EndDate);
+            if (stay.Count > 3)
+                throw new Exception("The maximum number of days from a stay are 3");
+
+            // check if dates are available
+            var alreadyBooked = CheckAvailability(stay);
+            if (alreadyBooked.Count > 0)
+                throw new Exception("Some or all days are not available");
+
+            var param = PrepParamInsert(obj);
+            var response = _dbComm.ExecuteOperation("STP_ALT2022_INSERT_BOOKING", param);
+
             return null;
         }
 
@@ -51,6 +62,23 @@ namespace AltenHotel.API.Business.Services
         {
             // TODO remove line of this id reservation
             return null;
+        }
+
+        private List<DateTime> CheckAvailability(List<DateTime> interval)
+        {
+            var availableDays = GetAvailability();
+            List<DateTime> response = new List<DateTime>();
+
+            // loop for the return of the specific days that are already booked
+
+            var notAvailable = from inter in interval
+                    where !availableDays.Any(x => x == inter)
+                    select inter;
+
+            var test = notAvailable.ToList();
+            response = notAvailable.ToList();
+
+            return response;
         }
 
         /// <summary>
@@ -107,6 +135,18 @@ namespace AltenHotel.API.Business.Services
             {
                 { "Pinitial_date", start },
                 { "Pfinal_date", end }
+            };
+        }
+
+        private Dictionary<string, dynamic> PrepParamInsert(Reservation obj)
+        {
+            return new Dictionary<string, dynamic>
+            {
+                { "Pname_client", obj.ClientName },
+                { "Pstart_date", obj.StartDate },
+                { "Pend_date", obj.EndDate },
+                { "Preservation_date", DateTime.Today },
+                { "Pactive", obj.Active }
             };
         }
     }

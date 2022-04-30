@@ -49,8 +49,18 @@ namespace AltenHotel.API.Controllers
 
         // POST api/<BookingController>
         [HttpPost]
-        public void PlaceReservation([FromBody] string value)
+        public ActionResult PlaceReservation([FromBody] Reservation obj)
         {
+            try
+            {
+                var response = _bookingSvc.PlaceReservation(obj);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         // PUT api/<BookingController>/5

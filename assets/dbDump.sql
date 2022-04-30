@@ -12,3 +12,23 @@ CREATE PROCEDURE STP_ALT2022_GET_AVAILABILITY(Pinitial_date date, Pfinal_date da
 BEGIN
 	select * from alt2022_booking where DT_START >= Pinitial_date and DT_START <= Pfinal_date;
 END;
+
+CREATE PROCEDURE STP_ALT2022_INSERT_BOOKING(Pname_client varchar(60), Pstart_date date, Pend_date date, Preservation_date date, Pactive bit)
+BEGIN
+	INSERT INTO `alt2022_booking`
+		(
+			`NAME_CLIENT`,
+			`DT_START`,
+            `DT_END`,
+            `DT_RESERVATION`,
+            `ACTIVE`
+        )
+	VALUES
+		(
+            Pname_client,
+            Pstart_date,
+            Pend_date,
+            Preservation_date,
+            Pactive
+        );
+END;

@@ -38,7 +38,7 @@ END;
 --
 CREATE PROCEDURE STP_ALT2022_DELETE_BOOKING(Pid int)
 BEGIN
-	UPDATE `alt2022_booking` SET `ACTIVE` = true
+	UPDATE `alt2022_booking` SET `ACTIVE` = FALSE
     where ID = Pid;
 END;
 

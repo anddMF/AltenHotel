@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace AltenHotel.API.Controllers
 {
     [Route("api/[controller]")]
@@ -41,13 +39,18 @@ namespace AltenHotel.API.Controllers
         }
 
         // GET api/<BookingController>/5
-        [HttpGet("{date}")]
-        public string GetSingleDate(DateTime date)
+        [HttpGet("{id}")]
+        public string GetSingleReservation(int id)
         {
             return "value";
         }
 
         // POST api/<BookingController>
+        /// <summary>
+        /// Places the reservertation for the room.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult PlaceReservation([FromBody] Reservation obj)
         {
@@ -63,14 +66,33 @@ namespace AltenHotel.API.Controllers
             }
         }
 
-        // PUT api/<BookingController>/5
-        [HttpPut("{id}")]
-        public void EditReservation(int id, [FromBody] string value)
+        // PUT api/<BookingController>
+        /// <summary>
+        /// Modifies the reservation.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        [HttpPut]
+        public ActionResult EditReservation([FromBody] Reservation obj)
         {
-            // before calling the update, needs to check the availability of the new date
+            try
+            {
+                var response = _bookingSvc.UpdateReservation(obj);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         // DELETE api/<BookingController>/5
+        /// <summary>
+        /// Cancels a reservation.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public ActionResult CancelReservation(int id)
         {

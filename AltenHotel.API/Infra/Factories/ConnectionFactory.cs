@@ -49,36 +49,28 @@ namespace AltenHotel.API.Infra.Factories
             Dictionary<string, object> parametros = null
             )
         {
-            try
+            using (var cmd = this.GetCommand())
             {
-                using (var cmd = this.GetCommand())
+                cmd.CommandText = cmdText;
+                cmd.CommandType = cmdType;
+
+                if (parametros != null)
                 {
-                    cmd.CommandText = cmdText;
-                    cmd.CommandType = cmdType;
-
-                    if (parametros != null)
+                    foreach (var pr in parametros)
                     {
-                        foreach (var pr in parametros)
+                        var parameter = cmd.CreateParameter();
+                        parameter.ParameterName = pr.Key;
+                        parameter.Value = pr.Value;
+                        if (pr.Value != null && pr.Value.GetType().Name == "Boolean")
                         {
-                            var parameter = cmd.CreateParameter();
-                            parameter.ParameterName = pr.Key;
-                            parameter.Value = pr.Value;
-                            if (pr.Value != null && pr.Value.GetType().Name == "Boolean")
-                            {
-                                parameter.MySqlDbType = MySqlDbType.Bit;
-                            }
-                            cmd.Parameters.Add(parameter);
+                            parameter.MySqlDbType = MySqlDbType.Bit;
                         }
+                        cmd.Parameters.Add(parameter);
                     }
-
-                    return cmd.ExecuteReader(); //SELECT, PROC QUE RETORNEM TABELA (n LINHAS E n COLUNAS)
                 }
 
-            } catch (Exception ex)
-            {
-                return null;
+                return cmd.ExecuteReader(); //SELECT
             }
-            
         }
 
         public bool ExecuteNonQuery(string cmdText,
@@ -105,7 +97,7 @@ namespace AltenHotel.API.Infra.Factories
                     }
                 }
 
-                cmd.ExecuteNonQuery(); //INSERT, DELETE, UPDATE, PROC SEM RETORNO
+                cmd.ExecuteNonQuery(); //INSERT, DELETE, UPDATE
                 return true;
             }
         }

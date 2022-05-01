@@ -16,7 +16,7 @@ namespace AltenHotel.API.Infra.DAL
         }
 
         /// <summary>
-        /// Executes a procedure that will make operations on the database, i.e insert, update or delete.
+        /// Executes a procedure that will make operations on the database, i.e. insert, update or delete.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="param"></param>

@@ -24,7 +24,7 @@ namespace AltenHotel.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult<IEnumerable<DateTime>> GetAllAvailability()
+        public ActionResult<IEnumerable<DateTime>> GetAvailability()
         {
             try
             {

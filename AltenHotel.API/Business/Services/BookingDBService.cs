@@ -20,7 +20,7 @@ namespace AltenHotel.API.Business.Services
         /// Gets the available dates for the room to be booked, in a range of 30 days starting from today + 1.
         /// </summary>
         /// <returns>list of DateTime</returns>
-        public List<DateTime> GetAvailability(int id = 0)
+        public List<DateTime> GetAvailability()
         {
             // initial date has the -3 because if the search start with the current date, a stay that initiates before today and ends after will not get capture
             DateTime initialDate = DateTime.Today.AddDays(-3);
@@ -126,8 +126,8 @@ namespace AltenHotel.API.Business.Services
             Dictionary<string, dynamic> param = PrepParamGet(initialDate, finalDate);
             List<ReservationDAO> reservations = _dbComm.ExecuteGet<ReservationDAO>("STP_ALT2022_GET_AVAILABILITY", param);
 
-            List<Reservation> response = TransformReservation(reservations);
-            // transform ReservationDAO to Reservation
+            List<Reservation> response = TransformFromDAO(reservations);
+
             return response;
         }
 
@@ -185,7 +185,7 @@ namespace AltenHotel.API.Business.Services
         /// </summary>
         /// <param name="daoList"></param>
         /// <returns></returns>
-        private List<Reservation> TransformReservation(List<ReservationDAO> daoList)
+        private List<Reservation> TransformFromDAO(List<ReservationDAO> daoList)
         {
             List<Reservation> response = new List<Reservation>();
 

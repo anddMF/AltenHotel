@@ -24,7 +24,7 @@ namespace AltenHotel.API.Business.Services
         {
             DateTime initialDate = DateTime.Today.AddDays(-3);
             DateTime finalDate = initialDate.AddDays(33);
-            var param = PrepParamGet(initialDate, finalDate);
+            Dictionary<string, dynamic> param = PrepParamGet(initialDate, finalDate);
             var reservations = _dbComm.ExecuteGet<ReservationDAO>("STP_ALT2022_GET_AVAILABILITY", param);
 
             List<DateTime> fullDateList = ExtractMiddleDates(DateTime.Today.AddDays(1), finalDate);
@@ -44,7 +44,7 @@ namespace AltenHotel.API.Business.Services
             if (alreadyBooked.Count > 0)
                 throw new Exception("Some or all days are not available");
 
-            var param = PrepParamInsert(obj);
+            Dictionary<string, dynamic> param = PrepParamInsert(obj);
             var response = _dbComm.ExecuteOperation("STP_ALT2022_INSERT_BOOKING", param);
 
             return null;
@@ -60,8 +60,9 @@ namespace AltenHotel.API.Business.Services
 
         public dynamic CancelReservation(int id)
         {
-            // TODO remove line of this id reservation
-            return null;
+            Dictionary<string, dynamic> param = PrepParamCancel(id);
+            var response = _dbComm.ExecuteOperation("STP_ALT2022_DELETE_BOOKING", param);
+            return response;
         }
 
         private List<DateTime> CheckAvailability(List<DateTime> interval)
@@ -147,6 +148,14 @@ namespace AltenHotel.API.Business.Services
                 { "Pend_date", obj.EndDate },
                 { "Preservation_date", DateTime.Today },
                 { "Pactive", obj.Active }
+            };
+        }
+
+        private Dictionary<string, dynamic> PrepParamCancel(int id)
+        {
+            return new Dictionary<string, dynamic>
+            {
+                { "Pid", id }
             };
         }
     }

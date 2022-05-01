@@ -72,8 +72,18 @@ namespace AltenHotel.API.Controllers
 
         // DELETE api/<BookingController>/5
         [HttpDelete("{id}")]
-        public void CancelReservation(int id)
+        public ActionResult CancelReservation(int id)
         {
+            try
+            {
+                var response = _bookingSvc.CancelReservation(id);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

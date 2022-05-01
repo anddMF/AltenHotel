@@ -1,4 +1,5 @@
-﻿using AltenHotel.API.Business.Services;
+﻿using AltenHotel.API.Business;
+using AltenHotel.API.Business.Services;
 using AltenHotel.API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,7 +13,7 @@ namespace AltenHotel.API.Controllers
     [ApiController]
     public class BookingController : ControllerBase
     {
-        private BookingDBService _bookingSvc;
+        private IBookingService _bookingSvc;
         public BookingController()
         {
             _bookingSvc = new BookingDBService();
@@ -36,13 +37,6 @@ namespace AltenHotel.API.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
-        }
-
-        // GET api/<BookingController>/5
-        [HttpGet("{id}")]
-        public string GetSingleReservation(int id)
-        {
-            return "value";
         }
 
         // POST api/<BookingController>

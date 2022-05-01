@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AltenHotel.API.Business.Services
 {
-    public class BookingDBService
+    public class BookingDBService : IBookingService
     {
         private DBCommunication _dbComm;
         public BookingDBService()

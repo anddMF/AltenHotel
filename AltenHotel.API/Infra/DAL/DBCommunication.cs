@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AltenHotel.API.Infra.DAL
 {
-    public class DBCommunication
+    public class DBCommunication : IDBCommunication
     {
         private ConnectionFactory _connection;
         public DBCommunication()
@@ -50,7 +50,7 @@ namespace AltenHotel.API.Infra.DAL
         /// <typeparam name="T"></typeparam>
         /// <param name="db"></param>
         /// <returns></returns>
-        public IEnumerable<T> TranslateDataTable<T>(dynamic db)
+        private IEnumerable<T> TranslateDataTable<T>(dynamic db)
         {
             var dt = (DataTable)db;
 

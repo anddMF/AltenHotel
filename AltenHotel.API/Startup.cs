@@ -1,6 +1,7 @@
 using AltenHotel.API.Business;
 using AltenHotel.API.Business.Services;
 using AltenHotel.API.Entities;
+using AltenHotel.API.Infra.DAL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,7 +36,9 @@ namespace AltenHotel.API
 
             AppSettings options = Configuration.GetSection("AppConfiguration").Get<AppSettings>();
             services.AddSingleton(options);
+
             services.AddScoped<IBookingService, BookingDBService>();
+            services.AddScoped<IDBCommunication, DBCommunication>();
 
             services.AddSwaggerGen(c =>
             {

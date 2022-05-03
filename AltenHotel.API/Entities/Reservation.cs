@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace AltenHotel.API.Entities
 {
+    /// <summary>
+    /// Reservation class is an anemic domain because of the simplicity of the code, all the changes in Reservation on the current scope of the project are 
+    /// made on the DB e it is not used con the scope of execution.
+    /// </summary>
     public class Reservation
     {
         public int Id { get; set; }
@@ -22,6 +26,9 @@ namespace AltenHotel.API.Entities
 
         public Reservation(ReservationDAO dao)
         {
+            if (dao.ID < 0)
+                throw new ArgumentException("Reservation ID cannot be negative");
+
             Id = dao.ID;
             ClientName = dao.NAME_CLIENT;
             StartDate = dao.DT_START;

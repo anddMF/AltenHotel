@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 
 namespace AltenHotel.API.Business.Services
 {
+    /// <summary>
+    /// Handles the domain logic for all the booking operations.
+    /// </summary>
     public class BookingDBService : IBookingService
     {
-        private DBCommunication _dbComm;
-        public BookingDBService()
+        private IDBCommunication _dbComm;
+        public BookingDBService(IDBCommunication dbComm)
         {
-            _dbComm = new DBCommunication();
+            _dbComm = dbComm;
         }
 
         /// <summary>
@@ -26,35 +29,35 @@ namespace AltenHotel.API.Business.Services
             DateTime initialDate = DateTime.Today.AddDays(-3);
             DateTime finalDate = initialDate.AddDays(33);
 
-            var reservations = GetReservations(initialDate, finalDate);
+            List<Reservation> reservations = GetReservations(initialDate, finalDate);
 
-            List<DateTime> fullDateList = ExtractMiddleDates(DateTime.Today.AddDays(1), finalDate);
-            fullDateList = RemoveBookedDays(fullDateList, reservations);
+            List<DateTime> full30DaysList = ExtractListOfDates(DateTime.Today.AddDays(1), finalDate);
+            full30DaysList = RemoveBookedDays(full30DaysList, reservations);
 
-            return fullDateList;
+            return full30DaysList;
         }
 
         /// <summary>
-        /// After validations, places the reservertation for the room.
+        /// After validations, places the reservation for the room.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
         public dynamic PlaceReservation(Reservation obj)
         {
-            List<DateTime> stay = ExtractMiddleDates(obj.StartDate, obj.EndDate);
+            List<DateTime> stay = ExtractListOfDates(obj.StartDate, obj.EndDate);
             if (stay.Count > 3)
                 throw new Exception("The maximum number of days from a stay are 3");
 
             // check if dates are available and inside the maximum of 30 days
-            var reservations = GetReservations(DateTime.Today.AddDays(-3), DateTime.Today.AddDays(33));
-            var alreadyBooked = CheckAvailability(stay, reservations);
+            List<Reservation> reservations = GetReservations(DateTime.Today.AddDays(-3), DateTime.Today.AddDays(33));
+            List<DateTime> alreadyBooked = CheckAvailability(stay, reservations);
             if (alreadyBooked.Count > 0)
                 throw new Exception("Some or all days are not available: " + NotAvailableDatesToString(alreadyBooked));
 
             Dictionary<string, dynamic> param = PrepParamInsert(obj);
-            var response = _dbComm.ExecuteOperation("STP_ALT2022_INSERT_BOOKING", param);
+            dynamic response = _dbComm.ExecuteOperation("STP_ALT2022_INSERT_BOOKING", param);
 
-            return null;
+            return response;
         }
 
         /// <summary>
@@ -64,21 +67,21 @@ namespace AltenHotel.API.Business.Services
         /// <returns></returns>
         public dynamic UpdateReservation(Reservation obj)
         {
-            List<DateTime> stay = ExtractMiddleDates(obj.StartDate, obj.EndDate);
+            List<DateTime> stay = ExtractListOfDates(obj.StartDate, obj.EndDate);
             if (stay.Count > 3)
                 throw new Exception("The maximum number of days from a stay are 3");
 
             // checks if dates are available and inside the maximum of 30 days, removing the booking that it is being updated
-            var reservations = GetReservations(DateTime.Today.AddDays(-3), DateTime.Today.AddDays(33));
+            List<Reservation> reservations = GetReservations(DateTime.Today.AddDays(-3), DateTime.Today.AddDays(33));
             reservations.RemoveAll(x => x.Id == obj.Id);
-            var alreadyBooked = CheckAvailability(stay, reservations);
+            List<DateTime> alreadyBooked = CheckAvailability(stay, reservations);
             if (alreadyBooked.Count > 0)
                 throw new Exception("Some or all days are not available: " + NotAvailableDatesToString(alreadyBooked));
 
             Dictionary<string, dynamic> param = PrepParamUpdate(obj);
-            var response = _dbComm.ExecuteOperation("STP_ALT2022_UPDATE_BOOKING", param);
+            dynamic response = _dbComm.ExecuteOperation("STP_ALT2022_UPDATE_BOOKING", param);
 
-            return null;
+            return response;
         }
 
         /// <summary>
@@ -89,7 +92,7 @@ namespace AltenHotel.API.Business.Services
         public dynamic CancelReservation(int id)
         {
             Dictionary<string, dynamic> param = PrepParamCancel(id);
-            var response = _dbComm.ExecuteOperation("STP_ALT2022_DELETE_BOOKING", param);
+            dynamic response = _dbComm.ExecuteOperation("STP_ALT2022_DELETE_BOOKING", param);
             return response;
         }
 
@@ -101,14 +104,13 @@ namespace AltenHotel.API.Business.Services
         /// <returns>list with the not available dates in the interval provided</returns>
         private List<DateTime> CheckAvailability(List<DateTime> interval, List<Reservation> reservations)
         {
-            //var availableDays = GetAvailability();
-            List<DateTime> full30Days = ExtractMiddleDates(DateTime.Today.AddDays(1), DateTime.Today.AddDays(31));
+            List<DateTime> full30Days = ExtractListOfDates(DateTime.Today.AddDays(1), DateTime.Today.AddDays(31));
             List<DateTime> availableDays = RemoveBookedDays(full30Days, reservations);
 
             List<DateTime> response = new List<DateTime>();
 
             // loop for the return of the specific days that are already booked
-            var notAvailable = from inter in interval
+            IEnumerable<DateTime> notAvailable = from inter in interval
                     where !availableDays.Any(x => x == inter)
                     select inter;
 
@@ -146,7 +148,7 @@ namespace AltenHotel.API.Business.Services
                 Reservation current = reservations[i];
                 if (current.Active)
                 {
-                    var currentInterval = ExtractMiddleDates(current.StartDate, current.EndDate);
+                    List<DateTime> currentInterval = ExtractListOfDates(current.StartDate, current.EndDate);
                     response = response.Except(currentInterval).ToList();
                 }
             }
@@ -155,12 +157,12 @@ namespace AltenHotel.API.Business.Services
         }
 
         /// <summary>
-        /// Extracts and return the dates between two dates.
+        /// Extracts and returns the list of DateTime between two dates.
         /// </summary>
         /// <param name="initialDate"></param>
         /// <param name="finalDate"></param>
         /// <returns>list of DateTime</returns>
-        private List<DateTime> ExtractMiddleDates(DateTime initialDate, DateTime finalDate)
+        private List<DateTime> ExtractListOfDates(DateTime initialDate, DateTime finalDate)
         {
             return Enumerable.Range(0, (finalDate - initialDate).Days + 1).Select(d => initialDate.AddDays(d)).ToList();
         }

@@ -14,9 +14,9 @@ namespace AltenHotel.API.Controllers
     public class BookingController : ControllerBase
     {
         private IBookingService _bookingSvc;
-        public BookingController()
+        public BookingController(IBookingService bookingSvc)
         {
-            _bookingSvc = new BookingDBService();
+            _bookingSvc = bookingSvc;
         }
 
         // GET: api/<BookingController>
@@ -29,7 +29,7 @@ namespace AltenHotel.API.Controllers
         {
             try
             {
-                var response = _bookingSvc.GetAvailability();
+                List<DateTime> response = _bookingSvc.GetAvailability();
 
                 return Ok(response);
             }
@@ -41,7 +41,7 @@ namespace AltenHotel.API.Controllers
 
         // POST api/<BookingController>
         /// <summary>
-        /// Places the reservertation for the room.
+        /// Places the reservation for the room.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
@@ -50,7 +50,7 @@ namespace AltenHotel.API.Controllers
         {
             try
             {
-                var response = _bookingSvc.PlaceReservation(obj);
+                dynamic response = _bookingSvc.PlaceReservation(obj);
 
                 return Ok(response);
             }
@@ -71,7 +71,10 @@ namespace AltenHotel.API.Controllers
         {
             try
             {
-                var response = _bookingSvc.UpdateReservation(obj);
+                if (obj.Id < 0)
+                    return BadRequest("ID cannot be a negative number");
+
+                dynamic response = _bookingSvc.UpdateReservation(obj);
 
                 return Ok(response);
             }
@@ -92,7 +95,10 @@ namespace AltenHotel.API.Controllers
         {
             try
             {
-                var response = _bookingSvc.CancelReservation(id);
+                if (id < 0)
+                    return BadRequest("ID cannot be a negative number");
+
+                dynamic response = _bookingSvc.CancelReservation(id);
 
                 return Ok(response);
             }

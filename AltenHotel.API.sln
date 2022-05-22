@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32106.194
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AltenHotel.API", "AltenHotel.API\AltenHotel.API.csproj", "{5BED887A-8283-4D23-9E04-F52274D91661}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AltenHotel.API", "AltenHotel.API\AltenHotel.API.csproj", "{5BED887A-8283-4D23-9E04-F52274D91661}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AltenHotel.API.Test", "AltenHotel.API.Test\AltenHotel.API.Test.csproj", "{91B7F2DD-2408-4B9F-ACC3-DAF16AAFBD48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{5BED887A-8283-4D23-9E04-F52274D91661}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BED887A-8283-4D23-9E04-F52274D91661}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BED887A-8283-4D23-9E04-F52274D91661}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91B7F2DD-2408-4B9F-ACC3-DAF16AAFBD48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91B7F2DD-2408-4B9F-ACC3-DAF16AAFBD48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91B7F2DD-2408-4B9F-ACC3-DAF16AAFBD48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91B7F2DD-2408-4B9F-ACC3-DAF16AAFBD48}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
